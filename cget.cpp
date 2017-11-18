@@ -33,8 +33,8 @@ void GetResponse(char* &url)
 int main(int argc, char* argv[])
 {
    char *url = argv[1];
-   promise char *promise;
-   future char *future;
+   promise<char*> promise;
+   future<char*> future;
    future = promise.get_future();
    thread thread (GetResponse, ref(future));
    promise.set_value(url);
