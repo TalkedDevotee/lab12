@@ -1,4 +1,5 @@
 #include <iostream>
+#include <future>
 #include <curl/curl.h>
 
 using namespace std;
@@ -31,6 +32,11 @@ void GetResponse(char* &url)
 int main(int argc, char* argv[])
 {
    char *url = argv[1];
-   GetResponse(url);
+   promise char *promise;
+   future char *future;
+   future = promise.get_future();
+   thread thread (GetResponse, ref(future));
+   promise.set_value(url);
+   thread.join();
    return 0;
 }
