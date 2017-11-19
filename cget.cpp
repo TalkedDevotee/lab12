@@ -3,8 +3,6 @@
 #include <thread>
 #include <curl/curl.h>
 
-using namespace std;
-
 void GetResponse(char* &url)
 {
    CURL *curl;
@@ -20,7 +18,7 @@ void GetResponse(char* &url)
       {
          long response_code = 0;
          curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-         cout << "Response answer: " << response_code << endl;
+         std::cout << "Response answer: " << response_code << std::endl;
       }
       else
       {
@@ -33,10 +31,10 @@ void GetResponse(char* &url)
 int main(int argc, char* argv[])
 {
    char *url = argv[1];
-   promise char *promise;
-   future char *future;
+   std::promise<char*>promise;
+   std::future<char*>future;
    future = promise.get_future();
-   thread thread (GetResponse, ref(future));
+   std::thread thread (GetResponse, ref(future));
    promise.set_value(url);
    thread.join();
    return 0;
