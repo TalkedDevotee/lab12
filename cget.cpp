@@ -8,7 +8,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     CURL *curl;
-    curl= curl_easy_init();
+    curl = curl_easy_init();
     string url;
     if (argc < 2)
     {
