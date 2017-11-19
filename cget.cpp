@@ -3,41 +3,47 @@
 #include <thread>
 #include <curl/curl.h>
 
-using namespace std;
-
-void GetResponse(char* &url)
+int main(int argc, char *argv[])
 {
-	CURL *curl;
-	CURLcode res;
-	curl = curl_easy_init();
+    CURL *curl;
+    curl= curl_easy_init();
+    string url;
+    if (argc < 2)
+    {
+        cout << "enter: ";
+        getline(std::cin, url);
+    }
+	else 
+	{
+		url = argv[1];
+	}
 	if (curl)
 	{
-		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_URL, Url.c_str());
 		curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-		res = curl_easy_perform(curl);
-		if (res == CURLE_OK)
-		{
-			long response_code = 0;
-			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-			cout << "Response answer: " << response_code << endl;
-		}
-		else
-		{
-			cout << "Code 'curl_easy_perform()' failed: " << curl_easy_strerror(res) << endl;
-		}
-		curl_easy_cleanup(curl);
-	}
-}
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
 
-int main(int argc, char* argv[])
-{
-	char *url = argv[1];
-	promise<char*> promise;
-	future<char*> future;
-	future = promise.get_future();
-	thread thread(GetResponse, ref(future));
-	promise.set_value(url);
-	thread.join();
-	return 0;
+		promise<CURLcode> promise;
+
+		auto response = promise.get_future();
+
+		thread request([curl, &promise]() 
+			       {
+				       promise.set_value(curl_easy_perform(curl));
+			       });
+
+        request.detach();
+
+        long response_code;
+
+        auto res = response.get();
+
+        if (res == CURLE_OK) 
+	{
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+            cout << "Response answer: " << response_code << endl;
+        }
+        curl_easy_cleanup(curl);
+    }
+    return 0;
 }
