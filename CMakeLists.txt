@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.9.6)
 
 set(CMAKE_CXX_STANDART 17)
 include(cmake/HunterGate.cmake)
