@@ -3,6 +3,8 @@
 #include <thread>
 #include <curl/curl.h>
 
+using namespace std;
+
 int main(int argc, char *argv[])
 {
     CURL *curl;
